@@ -7,6 +7,12 @@ from sql_queries import *
 
 def process_song_file(cur, filepath):
     
+    """
+        processes 1 song file and extracts necessary information to load the songs and aritsts table
+        Parameters : curson, filepath.
+        Retruns : None.
+    """
+    
     # open song file
     df = pd.read_json(filepath, lines = True)
 
@@ -38,6 +44,12 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    
+    """
+        processes 1 log file and extracts necessary information to load time, users and songplays table.
+        Parameters : curson, filepath.
+        Retruns : None.
+    """
     
     # open log file
     df = pd.read_json(filepath, lines=True)
@@ -84,7 +96,6 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        
         if (row.userId is not None and songid is not None and artistid is not None):
             songplay_data = (row.ts, row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
             cur.execute(songplay_table_insert, songplay_data)
@@ -92,6 +103,12 @@ def process_log_file(cur, filepath):
 
 def process_data(cur, conn, filepath, func):
     
+    """
+        Gets all the data files by traversing through all the subdirectories of a directory.
+        Iterates over the files and calls the appropriate processing function for each of the files.
+        
+        Parameters : cursor, connection, filepath, function
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
